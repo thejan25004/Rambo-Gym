@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrainingStudio - Schedule</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #e63946;
+      --secondary: #457b9d;
+      --dark: #1d3557;
+      --light: #f1faee;
+      --gray: #a8dadc;
+      --light-gray: #f5f5f5;
+      --card-bg: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--light-gray);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Horizontal Navigation Bar */
+    .top-navbar {
+      background-color: var(--dark);
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      height: 70px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      margin-right: 40px;
+      flex-shrink: 0;
+    }
+
+    .logo span {
+      color: var(--primary);
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      height: 100%;
+      overflow-x: auto;
+    }
+
+    .nav-menu::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    .nav-menu::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+
+    .nav-menu-group {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      position: relative;
+    }
+
+    .nav-menu-group + .nav-menu-group:before {
+      content: '';
+      height: 24px;
+      width: 1px;
+      background-color: rgba(255, 255, 255, 0.2);
+      margin: 0 15px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      padding: 0 15px;
+      font-weight: 500;
+      font-size: 14px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .nav-item i {
+      margin-right: 8px;
+      font-size: 16px;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 15px;
+      right: 15px;
+      height: 3px;
+      background-color: var(--primary);
+    }
+
+    .nav-section-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--gray);
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-right: 10px;
+    }
+
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-left: auto;
+    }
+
+    .notification-bell {
+      position: relative;
+      cursor: pointer;
+      color: white;
+      font-size: 20px;
+    }
+
+    .notification-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: var(--primary);
+      color: white;
+      font-size: 12px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .user-dropdown {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .user-dropdown-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      margin-right: 5px;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .user-role {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    .user-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 200px;
+      background-color: white;
+      border-radius: 5px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      padding: 10px 0;
+      display: none;
+      z-index: 100;
+      margin-top: 10px;
+    }
+
+    .user-dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-item {
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f5f5f5;
+      color: var(--primary);
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background-color: #eee;
+      margin: 8px 0;
+    }
+
+
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
+      display: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: white;
+      margin-right: 20px;
+    }
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      background-color: var(--card-bg);
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .search-container {
+      position: relative;
+      width: 300px;
+      margin: 10px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 15px 10px 40px;
+      border: 1px solid #ddd;
+      border-radius: 30px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .search-input:focus {
+      border-color: var(--secondary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+    }
+
+
+
+
+    /* Schedule Page Specific Styles */
+    .page-header {
+      margin-bottom: 30px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .page-subtitle {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .schedule-hero {
+      background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4)), url('img/breast.jpg') center/cover no-repeat;
+      height: 250px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      padding: 20px;
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .schedule-hero-content {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .schedule-hero-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .schedule-hero-subtitle {
+      font-size: 18px;
+      max-width: 600px;
+      margin: 0 auto 20px;
+      opacity: 0.9;
+    }
+
+    .btn {
+      padding: 10px 25px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #d32f2f;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline-light {
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+    }
+
+    .btn-outline-light:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .schedule-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .schedule-card {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s;
+    }
+
+    .schedule-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .schedule-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .schedule-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .schedule-badge {
+      background-color: var(--primary);
+      color: white;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 30px;
+      font-weight: 600;
+    }
+
+    .schedule-badge.active {
+      background-color: #10b981;
+    }
+
+    .schedule-badge.past {
+      background-color: #9ca3af;
+    }
+
+    .exercise-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .exercise-item {
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .exercise-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .exercise-name {
+      font-size: 15px;
+      color: var(--dark);
+      font-weight: 500;
+    }
+
+    .exercise-details {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .schedule-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    .action-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+    }
+
+    .btn-edit {
+      background-color: var(--light);
+      color: var(--dark);
+    }
+
+    .btn-edit:hover {
+      background-color: #e9e9e9;
+    }
+
+    .btn-start {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-start:hover {
+      background-color: #d32f2f;
+    }
+
+    .btn-view {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .btn-view:hover {
+      background-color: #3b6987;
+    }
+
+    .tips-section {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+    }
+
+    .tips-header {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tips-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .tip-card {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .tip-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tip-text {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 991px) {
+      .schedule-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        left: -280px;
+      }
+
+      .sidebar.active {
+        left: 0;
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .hamburger-menu {
+        display: block;
+      }
+
+      .close-sidebar {
+        display: block;
+      }
+
+      .schedule-hero-title {
+        font-size: 26px;
+      }
+
+      .schedule-hero-subtitle {
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .search-container {
+        display: none;
+      }
+
+      .top-bar {
+        padding: 10px 15px;
+      }
+
+      .tips-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Horizontal Navigation Bar -->
+<nav class="top-navbar">
+  <div class="mobile-menu-btn" id="mobileMenuBtn">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <div class="logo">RAMBO<span>STUDIO</span></div>
+
+  <div class="nav-menu" id="navMenu">
+    <div class="nav-menu-group">
+      <div class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item">
+        <i class="fas fa-dumbbell"></i>
+        <span>Workouts</span>
+      </div>
+      <div class="nav-item">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Schedule</span>
+      </div>
+      <div class="nav-item">
+        <i class="fas fa-utensils"></i>
+        <span>Nutrition</span>
+      </div>
+    </div>
+
+    <div class="nav-menu-group">
+      <div class="nav-section-label">TRAINING</div>
+      <div class="nav-item">
+        <i class="fas fa-running"></i>
+        <span>My Activities</span>
+      </div>
+      <div class="nav-item">
+        <i class="fas fa-chart-line"></i>
+        <span>Progress</span>
+      </div>
+      <div class="nav-item active">
+        <i class="fas fa-users"></i>
+        <span>Trainers</span>
+      </div>
+    </div>
+
+    <div class="nav-menu-group">
+      <div class="nav-section-label">ACCOUNT</div>
+      <div class="nav-item">
+        <i class="fas fa-user-cog"></i>
+        <span>Profile</span>
+      </div>
+      <div class="nav-item">
+        <i class="fas fa-cog"></i>
+        <span>Settings</span>
+      </div>
+      <div class="nav-item">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="user-actions">
+    <div class="notification-bell">
+      <i class="fas fa-bell"></i>
+      <div class="notification-count">3</div>
+    </div>
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-toggle">
+        <div class="user-info">
+          <div class="user-name">John Doe</div>
+          <div class="user-role">Premium Member</div>
+        </div>
+        <div class="user-avatar">J</div>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="user-dropdown-menu" id="userDropdownMenu">
+        <a href="#" class="dropdown-item">
+          <i class="fas fa-user"></i>
+          <span>My Profile</span>
+        </a>
+        <a href="#" class="dropdown-item">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dropdown-item">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+  <div class="top-bar">
+    <div class="hamburger-menu" id="hamburgerMenu">
+      <i class="fas fa-bars"></i>
+    </div>
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" class="search-input" placeholder="Search for workouts, exercises, etc.">
+    </div>
+
+  </div>
+
+  <div class="page-header fade-in">
+    <h1 class="page-title">Your Workout Schedule</h1>
+    <p class="page-subtitle">Keep track of your weekly workout routines and never miss a session</p>
+  </div>
+
+  <div class="schedule-hero fade-in">
+    <div class="schedule-hero-content">
+      <h2 class="schedule-hero-title">Maximize Your Results</h2>
+      <p class="schedule-hero-subtitle">Follow your personalized training schedule for optimal strength and fitness gains</p>
+      <div class="welcome-actions">
+        <button class="btn btn-primary">
+          <i class="fas fa-play"></i>
+          <span>Start Today's Workout</span>
+        </button>
+        <button class="btn btn-outline-light">
+          <i class="fas fa-calendar-plus"></i>
+          <span>Modify Schedule</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="schedule-container fade-in">
+    <!-- Current Schedule -->
+    <div class="schedule-card">
+      <div class="schedule-header">
+        <div class="schedule-title">
+          <i class="fas fa-calendar-day"></i>
+          <span>Now Schedule</span>
+        </div>
+        <div class="schedule-badge active">Active</div>
+      </div>
+
+      <h3 class="exercise-item"><span class="exercise-name">Day 1</span></h3>
+      <div class="exercise-list">
+        <div class="exercise-item">
+          <div class="exercise-name">Flat Bench Press</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Incline Bench Press</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Dumbbell Flyes</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Close-Grip Bench Press</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Overhead Tricep Extension</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Tricep Rope Pushdown</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Barbell Bicep Curls</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Hammer Curls</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Incline Dumbbell Curls</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+      </div>
+
+      <h3 class="exercise-item"><span class="exercise-name">Day 2</span></h3>
+      <div class="exercise-list">
+        <div class="exercise-item">
+          <div class="exercise-name">Overhead Shoulder Press</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Lateral Raises</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Face Pulls</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Pull-Ups</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Deadlifts</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Bent-Over Rows</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Barbell Squats</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Romanian Deadlifts</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Walking Lunges</div>
+          <div class="exercise-details">8 × 4</div>
+        </div>
+      </div>
+
+      <div class="schedule-actions">
+        <button class="action-btn btn-edit">
+          <i class="fas fa-edit"></i>
+          <span>Edit</span>
+        </button>
+        <button class="action-btn btn-start">
+          <i class="fas fa-play"></i>
+          <span>Start Workout</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Last Schedule -->
+    <div class="schedule-card">
+      <div class="schedule-header">
+        <div class="schedule-title">
+          <i class="fas fa-history"></i>
+          <span>Last Schedule</span>
+        </div>
+        <div class="schedule-badge past">Completed</div>
+      </div>
+
+      <div class="exercise-list">
+        <div class="exercise-item">
+          <div class="exercise-name">Lateral Raises</div>
+          <div class="exercise-details">6 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Face Pulls</div>
+          <div class="exercise-details">6 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Push-Ups</div>
+          <div class="exercise-details">6 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Dumbbell Flyes</div>
+          <div class="exercise-details">6 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Dumbbell Bicep Curls</div>
+          <div class="exercise-details">6 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Cable Bicep Curls</div>
+          <div class="exercise-details">6 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Tricep Rope Pushdown</div>
+          <div class="exercise-details">6 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Overhead Tricep Extension</div>
+          <div class="exercise-details">6 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Lat Pulldowns</div>
+          <div class="exercise-details">6 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Seated Cable Rows</div>
+          <div class="exercise-details">6 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Barbell Squats</div>
+          <div class="exercise-details">6 × 4</div>
+        </div>
+        <div class="exercise-item">
+          <div class="exercise-name">Romanian Deadlifts</div>
+          <div class="exercise-details">6 × 4</div>
+        </div>
+      </div>
+
+      <div class="schedule-actions">
+        <button class="action-btn btn-edit">
+          <i class="fas fa-copy"></i>
+          <span>Copy</span>
+        </button>
+        <button class="action-btn btn-view">
+          <i class="fas fa-chart-line"></i>
+          <span>View Results</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tips-section fade-in">
+    <h3 class="tips-header">
+      <i class="fas fa-lightbulb"></i>
+      <span>Training Tips</span>
+    </h3>
+    <div class="tips-content">
+      <div class="tip-card">
+        <div class="tip-title">
+          <i class="fas fa-dumbbell"></i>
+          <span>Progressive Overload</span>
+        </div>
+        <p class="tip-text">Gradually increase the weight, frequency, or number of repetitions in your strength training routine to continuously challenge your muscles.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-title">
+          <i class="fas fa-heartbeat"></i>
+          <span>Rest & Recovery</span>
+        </div>
+        <p class="tip-text">Ensure adequate rest between workouts targeting the same muscle groups - typically 48-72 hours for full recovery and optimal muscle growth.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-title">
+          <i class="fas fa-utensils"></i>
+          <span>Nutrition Timing</span>
+        </div>
+        <p class="tip-text">Consume protein and carbohydrates within 30-60 minutes after your workout to maximize muscle recovery and glycogen replenishment.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--<script>-->
+<!--  // DOM Elements-->
+<!--  const sidebar = document.getElementById('sidebar');-->
+<!--  const mainContent = document.getElementById('mainContent');-->
+<!--  const hamburgerMenu = document.getElementById('hamburgerMenu');-->
+<!--  const closeSidebar = document.getElementById('closeSidebar');-->
+<!--  const userDropdown = document.getElementById('userDropdown');-->
+<!--  const userDropdownMenu = document.getElementById('userDropdownMenu');-->
+
+<!--  // Mobile Sidebar Toggle-->
+<!--  hamburgerMenu.addEventListener('click', () => {-->
+<!--    sidebar.classList.add('active');-->
+<!--  });-->
+
+<!--  closeSidebar.addEventListener('click', () => {-->
+<!--    sidebar.classList.remove('active');-->
+<!--  });-->
+
+<!--  // Close sidebar when clicking outside on mobile-->
+<!--  document.addEventListener('click', (e) => {-->
+<!--    if (window.innerWidth <= 768) {-->
+<!--      if (!sidebar.contains(e.target) && !hamburgerMenu.contains(e.target)) {-->
+<!--        sidebar.classList.remove('active');-->
+<!--      }-->
+<!--    }-->
+<!--  });-->
+
+<!--  // User Dropdown Toggle-->
+<!--  userDropdown.addEventListener('click', (e) => {-->
+<!--    e.stopPropagation();-->
+<!--    userDropdownMenu.classList.toggle('show');-->
+<!--  });-->
+
+<!--  // Close dropdown when clicking outside-->
+<!--  document.addEventListener('click', () => {-->
+<!--    if (userDropdownMenu.classList.contains('show')) {-->
+<!--      userDropdownMenu.classList.remove('show');-->
+<!--    }-->
+<!--  });-->
+
+<!--  // Schedule Action Buttons-->
+<!--  const startWorkoutButtons = document.querySelectorAll('.btn-start');-->
+<!--  startWorkoutButtons.forEach(button => {-->
+<!--    button.addEventListener('click', () => {-->
+<!--      alert('Starting your workout session!');-->
+<!--      // Here you would redirect to the workout page or show a workout interface-->
+<!--    });-->
+<!--  });-->
+
+<!--  const editButtons = document.querySelectorAll('.btn-edit');-->
+<!--  editButtons.forEach(button => {-->
+<!--    button.addEventListener('click', () => {-->
+<!--      alert('Edit mode activated. You can now modify your workout schedule.');-->
+<!--      // Here you would activate edit mode for the schedule-->
+<!--    });-->
+<!--  });-->
+
+<!--  const viewResultsButtons = document.querySelectorAll('.btn-view');-->
+<!--  viewResultsButtons.forEach(button => {-->
+<!--    button.addEventListener('click', () => {-->
+<!--      alert('Viewing your workout results and analytics.');-->
+<!--      // Here you would redirect to the results/analytics page-->
+<!--    });-->
+<!--  });-->
+
+<!--  // Hero Buttons-->
+<!--  const heroStartButton = document.querySelector('.btn-primary');-->
+<!--  heroStartButton.addEventListener('click', () => {-->
+<!--    alert('Starting today\'s workout!');-->
+<!--    // Here you would redirect to today's workout page-->
+<!--  });-->
+
+<!--  const modifyScheduleButton = document.querySelector('.btn-outline-light');-->
+<!--  modifyScheduleButton.addEventListener('click', () => {-->
+<!--    alert('Opening schedule modification panel.');-->
+<!--    // Here you would open a modal or redirect to schedule modification page-->
+<!--  });-->
+
+<!--  // Menu Items Navigation-->
+<!--  const menuItems = document.querySelectorAll('.menu-item');-->
+<!--  menuItems.forEach(item => {-->
+<!--    item.addEventListener('click', () => {-->
+<!--      const pageName = item.querySelector('span').textContent;-->
+<!--      if (!item.classList.contains('active')) {-->
+<!--        alert(`Navigating to ${pageName} page.`);-->
+<!--        // Here you would handle navigation to the respective page-->
+
+<!--        // Update active state-->
+<!--        document.querySelector('.menu-item.active')?.classList.remove('active');-->
+<!--        item.classList.add('active');-->
+<!--      }-->
+<!--    });-->
+<!--  });-->
+
+<!--  // Search Functionality-->
+<!--  const searchInput = document.querySelector('.search-input');-->
+<!--  searchInput.addEventListener('keypress', (e) => {-->
+<!--    if (e.key === 'Enter') {-->
+<!--      const searchTerm = searchInput.value.trim();-->
+<!--      if (searchTerm) {-->
+<!--        alert(`Searching for: ${searchTerm}`);-->
+<!--        // Here you would implement search functionality-->
+<!--      }-->
+<!--    }-->
+<!--  });-->
+
+<!--  // Notification Bell Click-->
+<!--  const notificationBell = document.querySelector('.notification-bell');-->
+<!--  notificationBell.addEventListener('click', () => {-->
+<!--    alert('Opening notifications panel.');-->
+<!--    // Here you would show a notifications dropdown or panel-->
+<!--  });-->
+
+<!--  // Window resize handler for responsive layout-->
+<!--  window.addEventListener('resize', () => {-->
+<!--    if (window.innerWidth > 768) {-->
+<!--      sidebar.classList.remove('active');-->
+<!--    }-->
+<!--  });-->
+
+<!--  // Initialize animations-->
+<!--  document.addEventListener('DOMContentLoaded', () => {-->
+<!--    // Add fade-in class to elements that should animate in-->
+<!--    const animatedElements = document.querySelectorAll('.fade-in');-->
+<!--    animatedElements.forEach((element, index) => {-->
+<!--      setTimeout(() => {-->
+<!--        element.style.opacity = '1';-->
+<!--        element.style.transform = 'translateY(0)';-->
+<!--      }, 100 * index);-->
+<!--    });-->
+<!--  });-->
+<!--</script>-->
+</body>
+</html>

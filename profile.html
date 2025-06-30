@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RamboStudio - Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #e63946;
+      --secondary: #457b9d;
+      --dark: #1d3557;
+      --light: #f1faee;
+      --gray: #a8dadc;
+      --light-gray: #f5f5f5;
+      --card-bg: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--light-gray);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Horizontal Navigation Bar */
+    .top-navbar {
+      background-color: var(--dark);
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      height: 70px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      margin-right: 40px;
+      flex-shrink: 0;
+    }
+
+    .logo span {
+      color: var(--primary);
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      height: 100%;
+      overflow-x: auto;
+    }
+
+    .nav-menu::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    .nav-menu::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+
+    .nav-menu-group {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      position: relative;
+    }
+
+    .nav-menu-group + .nav-menu-group:before {
+      content: '';
+      height: 24px;
+      width: 1px;
+      background-color: rgba(255, 255, 255, 0.2);
+      margin: 0 15px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      padding: 0 15px;
+      font-weight: 500;
+      font-size: 14px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .nav-item i {
+      margin-right: 8px;
+      font-size: 16px;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 15px;
+      right: 15px;
+      height: 3px;
+      background-color: var(--primary);
+    }
+
+    .nav-section-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--gray);
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-right: 10px;
+    }
+
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-left: auto;
+    }
+
+    .notification-bell {
+      position: relative;
+      cursor: pointer;
+      color: white;
+      font-size: 20px;
+    }
+
+    .notification-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: var(--primary);
+      color: white;
+      font-size: 12px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .user-dropdown {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .user-dropdown-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      margin-right: 5px;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .user-role {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    .user-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 200px;
+      background-color: white;
+      border-radius: 5px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      padding: 10px 0;
+      display: none;
+      z-index: 100;
+      margin-top: 10px;
+    }
+
+    .user-dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-item {
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f5f5f5;
+      color: var(--primary);
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background-color: #eee;
+      margin: 8px 0;
+    }
+
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
+      display: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: white;
+      margin-right: 20px;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      background-color: var(--card-bg);
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .search-container {
+      position: relative;
+      width: 300px;
+      margin: 10px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 15px 10px 40px;
+      border: 1px solid #ddd;
+      border-radius: 30px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .search-input:focus {
+      border-color: var(--secondary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 20px;
+    }
+
+    /* Profile Specific Styles */
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 20px;
+    }
+
+    .profile-sidebar {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .profile-avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+
+    .profile-role {
+      font-size: 16px;
+      color: var(--secondary);
+      margin-bottom: 15px;
+    }
+
+    .profile-status {
+      display: inline-block;
+      background-color: #10b981;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    .profile-stats {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .profile-stat-item {
+      background-color: var(--light);
+      border-radius: 10px;
+      padding: 15px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .profile-bio {
+      margin-bottom: 25px;
+      color: #555;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .profile-actions {
+      width: 100%;
+    }
+
+    .btn {
+      padding: 10px 25px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #d32f2f;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--secondary);
+      color: var(--secondary);
+    }
+
+    .btn-outline:hover {
+      background: var(--secondary);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .profile-details {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .profile-card {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      padding: 25px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title i {
+      color: var(--secondary);
+      font-size: 20px;
+    }
+
+    .detail-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+
+    .detail-item {
+      margin-bottom: 15px;
+    }
+
+    .detail-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #777;
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .detail-value {
+      font-size: 16px;
+      color: var(--dark);
+      font-weight: 500;
+    }
+
+    .membership-card {
+      background: linear-gradient(135deg, var(--dark) 0%, var(--secondary) 100%);
+      border-radius: 15px;
+      padding: 30px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .membership-card::before {
+      content: '';
+      position: absolute;
+      right: -50px;
+      bottom: -50px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .membership-card::after {
+      content: '';
+      position: absolute;
+      left: -20px;
+      top: -20px;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .membership-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .membership-title {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+      opacity: 0.8;
+    }
+
+    .membership-plan {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .membership-logo {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .membership-logo span {
+      color: var(--primary);
+    }
+
+    .membership-details {
+      position: relative;
+      z-index: 1;
+    }
+
+    .membership-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .membership-label {
+      font-size: 12px;
+      opacity: 0.8;
+      width: 100px;
+    }
+
+    .membership-value {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .membership-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .trainer-container {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-top: 20px;
+      padding: 20px;
+      background-color: var(--light);
+      border-radius: 10px;
+    }
+
+    .trainer-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .trainer-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .trainer-info {
+      flex: 1;
+    }
+
+    .trainer-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+
+    .trainer-role {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 10px;
+    }
+
+    .trainer-stats {
+      display: flex;
+      gap: 15px;
+    }
+
+    .trainer-stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .trainer-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-sm {
+      padding: 8px 15px;
+      font-size: 12px;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 991px) {
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .user-info {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .nav-menu {
+        position: fixed;
+        top: 70px;
+        left: -300px;
+        width: 280px;
+        height: calc(100vh - 70px);
+        background-color: var(--dark);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px 0;
+        overflow-y: auto;
+        transition: all 0.3s ease;
+        z-index: 999;
+      }
+
+      .nav-menu.active {
+        left: 0;
+      }
+
+      .nav-menu-group {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+      }
+
+      .nav-menu-group + .nav-menu-group:before {
+        display: none;
+      }
+
+      .nav-menu-group + .nav-menu-group {
+        margin-top: 10px;
+      }
+
+      .nav-section-label {
+        padding: 10px 20px;
+        width: 100%;
+        margin-right: 0;
+      }
+
+      .nav-item {
+        width: 100%;
+        padding: 12px 20px;
+      }
+
+      .nav-item.active::after {
+        display: none;
+      }
+
+      .search-container {
+        display: none;
+      }
+
+      .detail-group {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Dropdown Animation */
+    @keyframes dropDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .user-dropdown-menu.show {
+      animation: dropDown 0.3s ease-out forwards;
+    }
+  </style>
+</head>
+<body>
+<!-- Horizontal Navigation Bar -->
+<nav class="top-navbar">
+  <div class="mobile-menu-btn" id="mobileMenuBtn">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <div class="logo">RAMBO<span>STUDIO</span></div>
+
+  <div class="nav-menu" id="navMenu">
+    <div class="nav-menu-group">
+      <div class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item">
+        <i class="fas fa-dumbbell"></i>
+        <span>Workouts</span>
+      </div>
+      <div class="nav-item">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Schedule</span>
+      </div>
+      <div class="nav-item">
+        <i class="fas fa-utensils"></i>
+        <span>Nutrition</span>
+      </div>
+    </div>
+
+    <div class="nav-menu-group">
+      <div class="nav-section-label">TRAINING</div>
+      <div class="nav-item">
+        <i class="fas fa-running"></i>
+        <span>My Activities</span>
+      </div>
+      <div class="nav-item">
+        <i class="fas fa-chart-line"></i>
+        <span>Progress</span>
+      </div>
+      <div class="nav-item">
+        <i class="fas fa-users"></i>
+        <span>Trainers</span>
+      </div>
+    </div>
+
+    <div class="nav-menu-group">
+      <div class="nav-section-label">ACCOUNT</div>
+      <div class="nav-item active">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </div>
+      <div class="nav-item">
+        <i class="fas fa-cog"></i>
+        <span>Settings</span>
+      </div>
+      <div class="nav-item">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="user-actions">
+    <div class="notification-bell">
+      <i class="fas fa-bell"></i>
+      <div class="notification-count">3</div>
+    </div>
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-toggle">
+        <div class="user-info">
+          <div class="user-name">John Doe</div>
+          <div class="user-role">Premium Member</div>
+        </div>
+        <div class="user-avatar">J</div>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="user-dropdown-menu" id="userDropdownMenu">
+        <a href="#" class="dropdown-item">
+          <i class="fas fa-user"></i>
+          <span>My Profile</span>
+        </a>
+        <a href="#" class="dropdown-item">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dropdown-item">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+  <div class="top-bar">
+    <div class="page-title">My Profile</div>
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" class="search-input" placeholder="Search for workouts, exercises, etc.">
+    </div>
+  </div>
+
+  <div class="profile-grid fade-in">
+    <!-- Profile Sidebar -->
+    <div class="profile-sidebar">
+      <div class="profile-avatar">
+        <img src="img/home/IMG_5025.JPG" alt="Profile Photo">
+      </div>
+      <h2 class="profile-name">John Doe</h2>
+      <div class="profile-role">Premium Member</div>
+      <div class="profile-status">Active</div>
+
+      <div class="profile-stats">
+        <div class="profile-stat-item">
+          <div class="stat-value">152</div>
+          <div class="stat-label">Workouts</div>
+        </div>
+        <div class="profile-stat-item">
+          <div class="stat-value">8</div>
+          <div class="stat-label">Months</div>
+        </div>
+      </div>
+
+      <p class="profile-bio">
+        Fitness enthusiast focused on strength training and cardio. Working towards my first marathon in 2025.
+      </p>
+
+      <div class="profile-actions">
+        <a href="settings.html" class="btn btn-primary">
+          <i class="fas fa-cog"></i>
+          <span>Edit Profile</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Profile Details -->
+    <div class="profile-details">
+      <!-- Membership Card -->
+      <div class="membership-card">
+        <div class="membership-header">
+          <div>
+            <div class="membership-title">Your Membership</div>
+            <div class="membership-plan">Premium Plan</div>
+          </div>
+          <div class="membership-logo">RAMBO<span>STUDIO</span></div>
+        </div>
+
+        <div class="membership-details">
+          <div class="membership-item">
+            <div class="membership-label">Member ID:</div>
+            <div class="membership-value">RS-34765-21P</div>
+          </div>
+          <div class="membership-item">
+            <div class="membership-label">Payment Plan:</div>
+            <div class="membership-value">Monthly ($79.99)</div>
+          </div>
+          <div class="membership-item">
+            <div class="membership-label">Next Payment:</div>
+            <div class="membership-value">May 15, 2025</div>
+          </div>
+          <div class="membership-item">
+            <div class="membership-label">Member Since:</div>
+            <div class="membership-value">September 12, 2024</div>
+          </div>
+        </div>
+
+        <div class="membership-footer">
+          <div>
+            <div class="membership-label">Status</div>
+            <div class="membership-value">Active</div>
+          </div>
+          <div>
+            <div class="membership-label">Valid Until</div>
+            <div class="membership-value">May 15, 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal Information -->
+      <div class="profile-card">
+        <h3 class="card-title">
+          <i class="fas fa-user-circle"></i>
+          <span>Personal Information</span>
+        </h3>
+
+        <div class="detail-group">
+          <div class="detail-item">
+            <div class="detail-label">Full Name</div>
+            <div class="detail-value">John Doe</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Email Address</div>
+            <div class="detail-value">john.doe@example.com</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Phone Number</div>
+            <div class="detail-value">+1 (555) 123-4567</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Date of Birth</div>
+            <div class="detail-value">March 15, 1992</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Gender</div>
+            <div class="detail-value">Male</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Address</div>
+            <div class="detail-value">123 Fitness Street, Gym City, SP 10001</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Emergency Contact</div>
+            <div class="detail-value">Jane Doe (+1 555-987-6543)</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Blood Type</div>
+            <div class="detail-value">O+</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Physical Stats -->
+      <div class="profile-card">
+        <h3 class="card-title">
+          <i class="fas fa-heartbeat"></i>
+          <span>Physical Statistics</span>
+        </h3>
+
+        <div class="detail-group">
+          <div class="detail-item">
+            <div class="detail-label">Height</div>
+            <div class="detail-value">183 cm</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Weight</div>
+            <div class="detail-value">78 kg</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">BMI</div>
+            <div class="detail-value">23.3 (Normal)</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Fat Percentage</div>
+            <div class="detail-value">14%</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Muscle Mass</div>
+            <div class="detail-value">62 kg</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Body Type</div>
+            <div class="detail-value">Mesomorph</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Resting Heart Rate</div>
+            <div class="detail-value">68 bpm</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Blood Pressure</div>
+            <div class="detail-value">120/80 mmHg</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assigned Trainer -->
+      <div class="profile-card">
+        <h3 class="card-title">
+          <i class="fas fa-user-friends"></i>
+          <span>Your Personal Trainer</span>
+        </h3>
+        <div class="trainer-container">
+          <div class="trainer-avatar">
+            <img src="img/home/thumb-1920-1049497.jpg" alt="Trainer Photo">
+          </div>
+          <div class="trainer-info">
+            <h4 class="trainer-name">Sarah Johnson</h4>
+            <div class="trainer-role">Senior Fitness Coach</div>
+            <div class="trainer-stats">
+              <div class="trainer-stat">
+                <i class="fas fa-star" style="color: #FFD700;"></i>
+                <span>4.9/5.0</span>
+              </div>
+              <div class="trainer-stat">
+                <i class="fas fa-users"></i>
+                <span>23 Clients</span>
+              </div>
+              <div class="trainer-stat">
+                <i class="fas fa-certificate"></i>
+                <span>8 Years Experience</span>
+              </div>
+            </div>
+          </div>
+          <div class="trainer-actions">
+            <button class="btn btn-outline btn-sm">
+              <i class="fas fa-comment"></i>
+              <span>Message</span>
+            </button>
+            <button class="btn btn-primary btn-sm">
+              <i class="fas fa-calendar-check"></i>
+              <span>Book Session</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fitness Goals -->
+      <div class="profile-card">
+        <h3 class="card-title">
+          <i class="fas fa-bullseye"></i>
+          <span>Fitness Goals</span>
+        </h3>
+
+        <div class="detail-group">
+          <div class="detail-item">
+            <div class="detail-label">Primary Goal</div>
+            <div class="detail-value">Strength & Muscle Building</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Secondary Goal</div>
+            <div class="detail-value">Endurance Training</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Weight Target</div>
+            <div class="detail-value">82 kg</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Body Fat Target</div>
+            <div class="detail-value">12%</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <div class="detail-label">Special Targets</div>
+          <div class="detail-value">
+            <ul style="list-style-type: disc; margin-left: 20px; margin-top: 10px;">
+              <li>Complete a marathon in under 4 hours by November 2025</li>
+              <li>Increase bench press max to 225 lbs by August 2025</li>
+              <li>Reduce body fat percentage to 12% by July 2025</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Medical Information -->
+      <div class="profile-card">
+        <h3 class="card-title">
+          <i class="fas fa-notes-medical"></i>
+          <span>Medical Information</span>
+        </h3>
+
+        <div class="detail-group">
+          <div class="detail-item">
+            <div class="detail-label">Medical Conditions</div>
+            <div class="detail-value">None</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Allergies</div>
+            <div class="detail-value">Peanuts, Shellfish</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Medications</div>
+            <div class="detail-value">None</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Past Injuries</div>
+            <div class="detail-value">Minor right ankle sprain (2023)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment History -->
+      <div class="profile-card">
+        <h3 class="card-title">
+          <i class="fas fa-credit-card"></i>
+          <span>Payment History</span>
+        </h3>
+
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+          <tr style="background-color: var(--light); border-bottom: 1px solid #ddd;">
+            <th style="padding: 12px 15px; text-align: left;">Date</th>
+            <th style="padding: 12px 15px; text-align: left;">Description</th>
+            <th style="padding: 12px 15px; text-align: right;">Amount</th>
+            <th style="padding: 12px 15px; text-align: center;">Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 12px 15px;">April 15, 2025</td>
+            <td style="padding: 12px 15px;">Monthly Premium Membership</td>
+            <td style="padding: 12px 15px; text-align: right;">$79.99</td>
+            <td style="padding: 12px 15px; text-align: center;"><span style="background-color: #10b981; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Paid</span></td>
+          </tr>
+          <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 12px 15px;">March 15, 2025</td>
+            <td style="padding: 12px 15px;">Monthly Premium Membership</td>
+            <td style="padding: 12px 15px; text-align: right;">$79.99</td>
+            <td style="padding: 12px 15px; text-align: center;"><span style="background-color: #10b981; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Paid</span></td>
+          </tr>
+          <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 12px 15px;">February 15, 2025</td>
+            <td style="padding: 12px 15px;">Monthly Premium Membership</td>
+            <td style="padding: 12px 15px; text-align: right;">$79.99</td>
+            <td style="padding: 12px 15px; text-align: center;"><span style="background-color: #10b981; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Paid</span></td>
+          </tr>
+          <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 12px 15px;">January 15, 2025</td>
+            <td style="padding: 12px 15px;">Monthly Premium Membership</td>
+            <td style="padding: 12px 15px; text-align: right;">$79.99</td>
+            <td style="padding: 12px 15px; text-align: center;"><span style="background-color: #10b981; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Paid</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <div style="margin-top: 20px; text-align: right;">
+          <a href="#" class="btn btn-outline" style="width: auto;">
+            <i class="fas fa-history"></i>
+            <span>View Full History</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile menu toggle
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const navMenu = document.getElementById('navMenu');
+
+  mobileMenuBtn.addEventListener('click', () => {
+    navMenu.classList.toggle('active');
+  });
+
+  // User dropdown toggle
+  const userDropdown = document.getElementById('userDropdown');
+  const userDropdownMenu = document.getElementById('userDropdownMenu');
+
+  userDropdown.addEventListener('click', (e) => {
+    e.stopPropagation();
+    userDropdownMenu.classList.toggle('show');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!userDropdown.contains(e.target)) {
+      userDropdownMenu.classList.remove('show');
+    }
+  });
+
+  // Close mobile menu when clicked outside
+  document.addEventListener('click', (e) => {
+    if (!navMenu.contains(e.target) && !mobileMenuBtn.contains(e.target) && window.innerWidth <= 768) {
+      navMenu.classList.remove('active');
+    }
+  });
+</script>
+</body>
+</html>

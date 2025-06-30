@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrainingStudio - Settings</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #e63946;
+      --secondary: #457b9d;
+      --dark: #1d3557;
+      --light: #f1faee;
+      --gray: #a8dadc;
+      --light-gray: #f5f5f5;
+      --card-bg: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--light-gray);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Settings Modal Overlay */
+    .settings-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .settings-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Settings Modal */
+    .settings-modal {
+      width: 500px;
+      max-width: 90%;
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      transform: translateY(-20px);
+      transition: all 0.3s ease;
+    }
+
+    .settings-overlay.active .settings-modal {
+      transform: translateY(0);
+    }
+
+    .settings-header {
+      background-color: var(--dark);
+      color: white;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .settings-title {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .settings-close {
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .settings-close:hover {
+      color: var(--primary);
+    }
+
+    /* Settings Tabs */
+    .settings-tabs {
+      display: flex;
+      border-bottom: 1px solid #eee;
+    }
+
+    .settings-tab {
+      padding: 15px 20px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 15px;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .settings-tab.active {
+      color: var(--primary);
+    }
+
+    .settings-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: var(--primary);
+    }
+
+    /* Settings Content */
+    .settings-content {
+      padding: 20px;
+    }
+
+    .settings-section {
+      display: none;
+    }
+
+    .settings-section.active {
+      display: block;
+    }
+
+    .settings-form-group {
+      margin-bottom: 20px;
+    }
+
+    .settings-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--dark);
+    }
+
+    .settings-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .settings-input:focus {
+      border-color: var(--secondary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.2);
+    }
+
+    .password-input-wrapper {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #777;
+    }
+
+    /* Profile Picture Section */
+    .profile-picture-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .profile-picture {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: var(--gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: 500;
+      color: var(--dark);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .profile-picture img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-picture-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    /* Buttons */
+    .settings-btn {
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--dark);
+      color: var(--dark);
+    }
+
+    .btn-outline:hover {
+      background-color: #f5f5f5;
+    }
+
+    .btn-danger {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #dc2626;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #d32f2f;
+    }
+
+    .btn-secondary {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #3b6a89;
+    }
+
+    .settings-footer {
+      padding: 15px 20px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      border-top: 1px solid #eee;
+    }
+
+    /* Validation styles */
+    .settings-input.error {
+      border-color: #ef4444;
+    }
+
+    .error-message {
+      color: #ef4444;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    /* Password strength indicator */
+    .password-strength {
+      height: 5px;
+      background-color: #eee;
+      margin-top: 10px;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      width: 0;
+      transition: all 0.3s;
+    }
+
+    .strength-weak {
+      width: 33%;
+      background-color: #ef4444;
+    }
+
+    .strength-medium {
+      width: 66%;
+      background-color: #f59e0b;
+    }
+
+    .strength-strong {
+      width: 100%;
+      background-color: #10b981;
+    }
+
+    .strength-text {
+      font-size: 12px;
+      margin-top: 5px;
+      text-align: right;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .profile-picture-section {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .profile-picture-actions {
+        width: 100%;
+      }
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Settings Overlay -->
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-modal">
+    <div class="settings-header">
+      <div class="settings-title">
+        <i class="fas fa-user-cog"></i>
+        <span>Account Settings</span>
+      </div>
+      <div class="settings-close" id="settingsClose">
+        <i class="fas fa-times"></i>
+      </div>
+    </div>
+
+    <div class="settings-tabs">
+      <div class="settings-tab active" data-tab="profile">Profile</div>
+      <div class="settings-tab" data-tab="password">Password</div>
+      <div class="settings-tab" data-tab="notifications">Notifications</div>
+    </div>
+
+    <div class="settings-content">
+      <!-- Profile Section -->
+      <div class="settings-section active" id="profileSection">
+        <div class="profile-picture-section">
+          <div class="profile-picture" id="profilePicture">
+            <div class="profile-initial">J</div>
+            <!-- Profile image will be set by JS -->
+          </div>
+          <div class="profile-picture-actions">
+            <label for="profilePicInput" class="settings-btn btn-outline">
+              <i class="fas fa-camera"></i>
+              <span>Upload New Photo</span>
+            </label>
+            <input type="file" id="profilePicInput" class="file-input" accept="image/*">
+            <button id="removePhoto" class="settings-btn btn-danger">
+              <i class="fas fa-trash"></i>
+              <span>Remove Photo</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label for="fullName" class="settings-label">Full Name</label>
+          <input type="text" id="fullName" class="settings-input" value="John Doe">
+        </div>
+
+        <div class="settings-form-group">
+          <label for="email" class="settings-label">Email Address</label>
+          <input type="email" id="email" class="settings-input" value="john.doe@example.com">
+        </div>
+
+        <div class="settings-form-group">
+          <label for="phone" class="settings-label">Phone Number</label>
+          <input type="tel" id="phone" class="settings-input" value="+1 (555) 123-4567">
+        </div>
+      </div>
+
+      <!-- Password Section -->
+      <div class="settings-section" id="passwordSection">
+        <div class="settings-form-group">
+          <label for="currentPassword" class="settings-label">Current Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="currentPassword" class="settings-input">
+            <span class="password-toggle" data-for="currentPassword">
+              <i class="fas fa-eye"></i>
+            </span>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label for="newPassword" class="settings-label">New Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="newPassword" class="settings-input">
+            <span class="password-toggle" data-for="newPassword">
+              <i class="fas fa-eye"></i>
+            </span>
+          </div>
+          <div class="password-strength">
+            <div class="password-strength-bar" id="passwordStrengthBar"></div>
+          </div>
+          <div class="strength-text" id="passwordStrengthText"></div>
+        </div>
+
+        <div class="settings-form-group">
+          <label for="confirmPassword" class="settings-label">Confirm New Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="confirmPassword" class="settings-input">
+            <span class="password-toggle" data-for="confirmPassword">
+              <i class="fas fa-eye"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications Section -->
+      <div class="settings-section" id="notificationsSection">
+        <div class="settings-form-group">
+          <label class="settings-label">Email Notifications</label>
+          <div class="checkbox-group">
+            <div class="settings-checkbox">
+              <input type="checkbox" id="emailWorkouts" checked>
+              <label for="emailWorkouts">Workout Reminders</label>
+            </div>
+            <div class="settings-checkbox">
+              <input type="checkbox" id="emailPromotions">
+              <label for="emailPromotions">Promotions and Offers</label>
+            </div>
+            <div class="settings-checkbox">
+              <input type="checkbox" id="emailNews" checked>
+              <label for="emailNews">Newsletter</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-label">Push Notifications</label>
+          <div class="checkbox-group">
+            <div class="settings-checkbox">
+              <input type="checkbox" id="pushWorkouts" checked>
+              <label for="pushWorkouts">Workout Reminders</label>
+            </div>
+            <div class="settings-checkbox">
+              <input type="checkbox" id="pushProgress" checked>
+              <label for="pushProgress">Goal Progress Updates</label>
+            </div>
+            <div class="settings-checkbox">
+              <input type="checkbox" id="pushMessages" checked>
+              <label for="pushMessages">New Messages</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-footer">
+      <button class="settings-btn btn-outline" id="cancelSettings">Cancel</button>
+      <button class="settings-btn btn-primary" id="saveSettings">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Button to open settings modal (for demo purposes) -->
+<div style="padding: 20px; text-align: center;">
+  <button id="openSettingsBtn" class="settings-btn btn-primary">
+    <i class="fas fa-user-cog"></i>
+    <span>Open Settings</span>
+  </button>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Elements
+    const openSettingsBtn = document.getElementById('openSettingsBtn');
+    const settingsOverlay = document.getElementById('settingsOverlay');
+    const settingsClose = document.getElementById('settingsClose');
+    const cancelSettings = document.getElementById('cancelSettings');
+    const saveSettings = document.getElementById('saveSettings');
+    const settingsTabs = document.querySelectorAll('.settings-tab');
+    const settingsSections = document.querySelectorAll('.settings-section');
+    const passwordToggles = document.querySelectorAll('.password-toggle');
+    const profilePicInput = document.getElementById('profilePicInput');
+    const profilePicture = document.getElementById('profilePicture');
+    const removePhotoBtn = document.getElementById('removePhoto');
+    const newPasswordInput = document.getElementById('newPassword');
+    const passwordStrengthBar = document.getElementById('passwordStrengthBar');
+    const passwordStrengthText = document.getElementById('passwordStrengthText');
+
+    // Open settings modal
+    openSettingsBtn.addEventListener('click', function() {
+      settingsOverlay.classList.add('active');
+    });
+
+    // Close settings modal
+    function closeSettingsModal() {
+      settingsOverlay.classList.remove('active');
+    }
+
+    settingsClose.addEventListener('click', closeSettingsModal);
+    cancelSettings.addEventListener('click', closeSettingsModal);
+
+    // Close modal when clicking outside
+    settingsOverlay.addEventListener('click', function(e) {
+      if (e.target === settingsOverlay) {
+        closeSettingsModal();
+      }
+    });
+
+    // Tab navigation
+    settingsTabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        // Remove active class from all tabs
+        settingsTabs.forEach(t => t.classList.remove('active'));
+        // Add active class to clicked tab
+        this.classList.add('active');
+
+        // Show corresponding section
+        const tabName = this.getAttribute('data-tab');
+        settingsSections.forEach(section => {
+          section.classList.remove('active');
+          if (section.id === tabName + 'Section') {
+            section.classList.add('active');
+          }
+        });
+      });
+    });
+
+    // Toggle password visibility
+    passwordToggles.forEach(toggle => {
+      toggle.addEventListener('click', function() {
+        const inputId = this.getAttribute('data-for');
+        const input = document.getElementById(inputId);
+
+        if (input.type === 'password') {
+          input.type = 'text';
+          this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        } else {
+          input.type = 'password';
+          this.innerHTML = '<i class="fas fa-eye"></i>';
+        }
+      });
+    });
+
+    // Profile picture upload
+    profilePicInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          profilePicture.innerHTML = `<img src="${e.target.result}" alt="Profile Picture">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Remove profile picture
+    removePhotoBtn.addEventListener('click', function() {
+      profilePicture.innerHTML = '<div class="profile-initial">J</div>';
+    });
+
+    // Password strength checker
+    newPasswordInput.addEventListener('input', function() {
+      const password = this.value;
+      let strength = 0;
+
+      // Length check
+      if (password.length >= 8) strength += 1;
+
+      // Contains uppercase
+      if (/[A-Z]/.test(password)) strength += 1;
+
+      // Contains number
+      if (/[0-9]/.test(password)) strength += 1;
+
+      // Contains special character
+      if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+
+      // Update strength bar
+      if (password.length === 0) {
+        passwordStrengthBar.className = 'password-strength-bar';
+        passwordStrengthBar.style.width = '0';
+        passwordStrengthText.textContent = '';
+      } else if (strength <= 2) {
+        passwordStrengthBar.className = 'password-strength-bar strength-weak';
+        passwordStrengthText.textContent = 'Weak';
+        passwordStrengthText.style.color = '#ef4444';
+      } else if (strength === 3) {
+        passwordStrengthBar.className = 'password-strength-bar strength-medium';
+        passwordStrengthText.textContent = 'Medium';
+        passwordStrengthText.style.color = '#f59e0b';
+      } else {
+        passwordStrengthBar.className = 'password-strength-bar strength-strong';
+        passwordStrengthText.textContent = 'Strong';
+        passwordStrengthText.style.color = '#10b981';
+      }
+    });
+
+    // Save settings (demo)
+    saveSettings.addEventListener('click', function() {
+      // Show a success message (in a real app, you would validate and save data)
+      alert('Settings saved successfully!');
+      closeSettingsModal();
+    });
+  });
+</script>
+
+</body>
+</html>

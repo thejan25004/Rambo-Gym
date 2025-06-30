@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitFlex - Login</title>
+  <style>
+    :root {
+      --primary: #e63946;
+      --secondary: #457b9d;
+      --dark: #1d3557;
+      --light: #f1faee;
+      --gray: #a8dadc;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background-color: var(--dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 50px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+    }
+
+    .logo {
+      color: white;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .logo span {
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 15px;
+    }
+
+    .btn {
+      padding: 8px 20px;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #d32f2f;
+      transform: translateY(-2px);
+    }
+
+    .main-container {
+      display: flex;
+      flex: 1;
+    }
+
+    /* New side wallpaper styles */
+    .login-split {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 70px); /* Adjust based on navbar height */
+    }
+
+    .wallpaper-side {
+      flex: 0.8; /* Reduced ratio for the wallpaper side */
+      background-image: url('img/2465431.jpg');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .wallpaper-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(29, 53, 87, 0.7); /* Dark overlay with opacity */
+      z-index: 1;
+    }
+
+    .wallpaper-content {
+      position: relative;
+      z-index: 2;
+      max-width: 500px;
+    }
+
+    .wallpaper-content h2 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .wallpaper-content p {
+      font-size: 18px;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 40px;
+      text-align: left;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .feature-icon {
+      background: var(--primary);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Login form side */
+    .login-side {
+      flex: 1.5; /* Increased ratio for the login side */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 550px; /* Increased max-width */
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .login-header {
+      background-color: var(--dark);
+      color: white;
+      padding: 32px; /* Increased padding */
+      text-align: center;
+      position: relative;
+    }
+
+    .login-header h2 {
+      font-size: 30px; /* Larger heading */
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .login-header p {
+      color: var(--gray);
+      font-size: 18px; /* Larger font */
+    }
+
+    .login-form {
+      padding: 35px 40px; /* Increased padding */
+    }
+
+    .form-group {
+      margin-bottom: 25px; /* Increased spacing between form groups */
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 500;
+      color: var(--dark);
+      font-size: 17px; /* Slightly larger font */
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 15px 18px; /* Larger input fields */
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 17px; /* Larger font size */
+      transition: all 0.3s;
+    }
+
+    .form-control:focus {
+      border-color: var(--secondary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.2);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-check label {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .form-actions a {
+      color: var(--secondary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .form-actions a:hover {
+      color: var(--dark);
+      text-decoration: underline;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 18px; /* Taller button */
+      border: none;
+      border-radius: 6px; /* Slightly larger radius */
+      background-color: var(--primary);
+      color: white;
+      font-size: 18px; /* Larger font */
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 25px;
+      letter-spacing: 0.5px; /* Added letter spacing for better readability */
+    }
+
+    .btn-login:hover {
+      background-color: #d32f2f;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3); /* Added shadow effect on hover */
+    }
+
+    .social-login {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .btn-social {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: white;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: #333;
+      gap: 10px;
+    }
+
+    .btn-social:hover {
+      background-color: #f5f5f5;
+    }
+
+    .btn-google img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .login-footer {
+      text-align: center;
+      padding: 20px 30px;
+      border-top: 1px solid #eee;
+      background-color: #fafafa;
+    }
+
+    .login-footer p {
+      color: #555;
+      font-size: 14px;
+    }
+
+    .login-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .login-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 992px) {
+      .login-split {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .wallpaper-side {
+        display: none; /* Hide the wallpaper on smaller screens */
+      }
+
+      .login-side {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 15px 20px;
+        flex-wrap: wrap;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .login-container {
+        margin: 20px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="logo">RAMBO<span>FLEX</span></div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Classes</a>
+    <a href="#">Trainers</a>
+    <a href="#">Nutrition</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="auth-buttons">
+    <a href="login.html" class="btn btn-outline">Login</a>
+    <a href="signup.html" class="btn btn-primary">Sign Up</a>
+  </div>
+</nav>
+
+<div class="main-container">
+  <div class="login-split">
+    <!-- Wallpaper Side -->
+    <div class="wallpaper-side">
+      <div class="wallpaper-overlay"></div>
+      <div class="wallpaper-content">
+        <h2>Transform Your Fitness Journey</h2>
+        <p>Join thousands of members who have achieved their fitness goals with FitFlex's personalized training programs and nutrition plans.</p>
+
+        <div class="features-list">
+          <div class="feature-item">
+            <div class="feature-icon">✓</div>
+            <div>Personalized workout plans tailored to your goals</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">✓</div>
+            <div>Connect with certified trainers and nutritionists</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">✓</div>
+            <div>Track your progress with advanced analytics</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">✓</div>
+            <div>Access to exclusive fitness classes and videos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Form Side -->
+    <div class="login-side">
+      <div class="login-container">
+        <div class="login-header">
+          <h2>Welcome Back</h2>
+          <p>Login to access your fitness journey</p>
+        </div>
+
+        <div class="login-form">
+          <form id="loginForm" action="dashboard.html">
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+            </div>
+
+            <div class="form-actions">
+              <div class="form-check">
+                <input type="checkbox" id="remember">
+                <label for="remember">Remember me</label>
+              </div>
+              <a href="#">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn-login">Login</button>
+
+            <div class="social-login">
+              <a href="#" class="btn-social btn-google">
+                <img src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google">
+                <span>Login with Google</span>
+              </a>
+            </div>
+          </form>
+        </div>
+
+        <div class="login-footer">
+          <p>Don't have an account yet? <a href="signup.html">Sign Up</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    // Here you would normally perform validation and authentication
+    // For demo purposes, we're just redirecting to the dashboard
+    localStorage.setItem('currentUser', JSON.stringify({email: email}));
+    window.location.href = 'dashboard.html';
+  });
+</script>
+</body>
+</html>
